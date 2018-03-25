@@ -8,6 +8,8 @@
 var fs = require('fs');
 var express = require('express');
 var app = express();
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 if (!process.env.DISABLE_XORIGIN) {
   app.use(function(req, res, next) {
@@ -36,6 +38,13 @@ app.route('/_api/package.json')
 app.route('/')
     .get(function(req, res) {
 		  res.sendFile(process.cwd() + '/views/index.html');
+    })
+app.route('/form')
+    .post(upload.single('file'), function(req, res) {
+		  // req.file is the `avatar` file 
+      // req.body will hold the text fields, if there were any
+      let file = req.file;
+      res.json({'size': file.size});
     })
 
 // Respond not found to all the wrong routes
